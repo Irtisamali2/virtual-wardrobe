@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_signin/reusable_widgets/reusable_widget.dart';
-import 'package:firebase_signin/screens/home_screen.dart';
+import 'package:firebase_signin/screens/Home/home_screen.dart';
 import 'package:firebase_signin/screens/reset_password.dart';
 import 'package:firebase_signin/screens/signup_screen.dart';
 import 'package:firebase_signin/utils/color_utils.dart';
@@ -55,7 +55,8 @@ class _SignInScreenState extends State<SignInScreen> {
                           email: _emailTextController.text,
                           password: _passwordTextController.text)
                       .then((value) {
-                    Navigator.push(context,
+                    print('SignIn');
+                    Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (context) => HomeScreen()));
                   }).onError((error, stackTrace) {
                     print("Error ${error.toString()}");
