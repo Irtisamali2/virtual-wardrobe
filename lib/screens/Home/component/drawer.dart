@@ -2,20 +2,22 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_signin/provider/category_selected.dart';
 import 'package:firebase_signin/reusable_widgets/reusable_widget.dart';
 import 'package:firebase_signin/screens/signin_screen.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../utils/color_utils.dart';
 import 'create_category_bottom_sheet.dart';
-import 'drop_down_button.dart';
 
 Widget drawer(
     {required BuildContext context,
     required String url,
+    required List category,
     required Function addImageTofireBase,
     required Function pickImage,
     required TextEditingController controller,
@@ -35,12 +37,15 @@ Widget drawer(
         children: [
           ListTile(
             leading: Icon(
-              Icons.home,
+              Icons.photo,
+              color: Colors.white,
             ),
-            title: const Text('Page 1'),
+            title: const Text('Add New Picture',
+                style: TextStyle(color: Colors.white, fontSize: 20)),
             onTap: () {
               Navigator.pop(context);
               showBottomSheetForImagePicker(
+                  category: category,
                   addImageTofireBase: addImageTofireBase,
                   context: context,
                   imageUrl: url,
@@ -49,9 +54,11 @@ Widget drawer(
           ),
           ListTile(
             leading: Icon(
-              Icons.train,
+              Icons.category,
+              color: Colors.white,
             ),
-            title: const Text('Create New Category'),
+            title: const Text('New Category',
+                style: TextStyle(color: Colors.white, fontSize: 20)),
             onTap: () {
               Navigator.pop(context);
               createCategoryBottomSheet(
@@ -85,11 +92,14 @@ Widget drawer(
 showBottomSheetForImagePicker(
     {required BuildContext context,
     required String imageUrl,
+    required List category,
     required Function addImageTofireBase,
     required Function onTap}) {
   return showModalBottomSheet(
     context: context,
     builder: (context) {
+      final _changeIndex = Provider.of<SelectCategory>(context);
+      final currentIndex = _changeIndex.selectedIndex;
       return Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
@@ -111,7 +121,33 @@ showBottomSheetForImagePicker(
             const SizedBox(
               height: 10,
             ),
-            const CategoryPicker(),
+            Wrap(
+              spacing: 10,
+              children: List.generate(
+                  category.length,
+                  (index) => GestureDetector(
+                        onTap: () {
+                          _changeIndex.selctIndex(index);
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: currentIndex == index
+                                  ? Colors.black26
+                                  : Colors.white,
+                              borderRadius: BorderRadius.circular(20)),
+                          padding: const EdgeInsets.all(20),
+                          child: Text(category[index].toString(),
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: currentIndex == index
+                                      ? Colors.white
+                                      : Colors.black54)),
+                        ),
+                      )),
+            ),
+           const SizedBox(
+              height: 10,
+            ),
             GestureDetector(
               onTap: () {
                 onTap();
