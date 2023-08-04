@@ -2,8 +2,9 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_signin/provider/category_selected.dart';
+import 'package:firebase_signin/provider/category_provider.dart';
 import 'package:firebase_signin/reusable_widgets/reusable_widget.dart';
+import 'package:firebase_signin/screens/Home/component/upload_image_bottom_sheet.dart';
 import 'package:firebase_signin/screens/signin_screen.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -16,27 +17,35 @@ import 'create_category_bottom_sheet.dart';
 
 Widget drawer(
     {required BuildContext context,
-    required String url,
     required List category,
     required Function addImageTofireBase,
     required Function pickImage,
     required TextEditingController controller,
     required addCategoryFunction}) {
   return Drawer(
+    shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+      topRight: Radius.circular(20),
+      bottomRight: Radius.circular(20),
+    )),
     child: Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 50),
       decoration: BoxDecoration(
+          borderRadius: const BorderRadius.only(
+            topRight: Radius.circular(20),
+            bottomRight: Radius.circular(20),
+          ),
           gradient: LinearGradient(colors: [
-        hexStringToColor("CB2B93"),
-        hexStringToColor("9546C4"),
-        hexStringToColor("5E61F4")
-      ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+            hexStringToColor("CB2B93"),
+            hexStringToColor("9546C4"),
+            hexStringToColor("5E61F4")
+          ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
       child: Column(
         // Important: Remove any padding from the ListView.
 
         children: [
           ListTile(
-            leading: Icon(
+            leading: const Icon(
               Icons.photo,
               color: Colors.white,
             ),
@@ -48,12 +57,14 @@ Widget drawer(
                   category: category,
                   addImageTofireBase: addImageTofireBase,
                   context: context,
-                  imageUrl: url,
                   onTap: pickImage);
             },
           ),
+          const SizedBox(
+            height: 10,
+          ),
           ListTile(
-            leading: Icon(
+            leading: const Icon(
               Icons.category,
               color: Colors.white,
             ),
@@ -70,10 +81,12 @@ Widget drawer(
           ),
           const Spacer(),
           ListTile(
-            leading: Icon(
+            leading: const Icon(
               Icons.exit_to_app,
+              color: Colors.white,
             ),
-            title: const Text('Log out'),
+            title: const Text('Log out',
+                style: TextStyle(color: Colors.white, fontSize: 20)),
             onTap: () {
               FirebaseAuth.instance.signOut().then((_) {
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
@@ -86,95 +99,5 @@ Widget drawer(
         ],
       ),
     ),
-  );
-}
-
-showBottomSheetForImagePicker(
-    {required BuildContext context,
-    required String imageUrl,
-    required List category,
-    required Function addImageTofireBase,
-    required Function onTap}) {
-  return showModalBottomSheet(
-    context: context,
-    builder: (context) {
-      final _changeIndex = Provider.of<SelectCategory>(context);
-      final currentIndex = _changeIndex.selectedIndex;
-      return Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [
-          hexStringToColor("CB2B93"),
-          hexStringToColor("9546C4"),
-          hexStringToColor("5E61F4")
-        ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Select Category',
-              style: TextStyle(
-                fontSize: 20,
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Wrap(
-              spacing: 10,
-              children: List.generate(
-                  category.length,
-                  (index) => GestureDetector(
-                        onTap: () {
-                          _changeIndex.selctIndex(index);
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: currentIndex == index
-                                  ? Colors.black26
-                                  : Colors.white,
-                              borderRadius: BorderRadius.circular(20)),
-                          padding: const EdgeInsets.all(20),
-                          child: Text(category[index].toString(),
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  color: currentIndex == index
-                                      ? Colors.white
-                                      : Colors.black54)),
-                        ),
-                      )),
-            ),
-           const SizedBox(
-              height: 10,
-            ),
-            GestureDetector(
-              onTap: () {
-                onTap();
-              },
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height * 0.30,
-                width: double.infinity,
-                child: imageUrl == ''
-                    ? const Center(
-                        child: Text('Pick An Image'),
-                      )
-                    : ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Image.file(
-                          File(imageUrl),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            firebaseUIButton(context, 'Add', addImageTofireBase)
-          ],
-        ),
-      );
-    },
   );
 }

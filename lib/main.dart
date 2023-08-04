@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_signin/provider/category_selected.dart';
+import 'package:firebase_signin/provider/category_provider.dart';
+import 'package:firebase_signin/provider/wardRobe_provider.dart';
 import 'package:firebase_signin/screens/Home/home_screen.dart';
 import 'package:firebase_signin/screens/signin_screen.dart';
 import 'package:flutter/material.dart';
@@ -19,9 +20,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => SelectCategory())
+        ChangeNotifierProvider(create: (context) => SelectCategory()),
+        ChangeNotifierProvider(create: (context) => WardRobeProvider())
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
           // This is the theme of your application.
