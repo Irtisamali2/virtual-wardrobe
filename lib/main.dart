@@ -5,40 +5,40 @@ import 'package:firebase_signin/screens/Home/home_screen.dart';
 import 'package:firebase_signin/screens/signin_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'provider/shared_pref_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(const MyApp());
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String email = prefs.getString('email') ?? '';
+  runApp(MyApp(
+    email: email,
+  ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
+  const MyApp({required this.email, Key? key}) : super(key: key);
+  final String email;
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    // final _provider = Provider.of<SharedPrefProvider>(context, listen: false);
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => SelectCategory()),
-        ChangeNotifierProvider(create: (context) => WardRobeProvider())
+        ChangeNotifierProvider(create: (context) => WardRobeProvider()),
+        ChangeNotifierProvider(create: (context) => SharedPrefProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
-          // This is the theme of your application.
-          //
-          // Try running your application with "flutter run". You'll see the
-          // application has a blue toolbar. Then, without quitting the app, try
-          // changing the primarySwatch below to Colors.green and then invoke
-          // "hot reload" (press "r" in the console where you ran "flutter run",
-          // or simply save your changes to "hot reload" in a Flutter IDE).
-          // Notice that the counter didn't reset back to zero; the application
-          // is not restarted.
           primarySwatch: Colors.blue,
         ),
-        home: const SignInScreen(),
+        home: email == '' ? const SignInScreen() : const HomeScreen(),
       ),
     );
   }

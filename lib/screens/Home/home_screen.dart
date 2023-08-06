@@ -10,9 +10,8 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import '../../provider/category_provider.dart';
 import '../../utils/color_utils.dart';
-import 'PickerOverlay/overlay.dart';
-import 'component/drawer.dart';
-import 'component/wardrobe.dart';
+import 'imagePickerOverlay/overlay.dart';
+import '../Drawer/drawer.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -50,29 +49,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 final List<dynamic> category =
                     snapshot.data!.docs.map((doc) => doc.id).toList();
                 return drawer(
+                    onTap: () {
+                      _key.currentState!.closeDrawer();
+                    },
                     category: category,
                     addImageTofireBase: () {
-                      print(_cameraImage);
-                      if (_cameraImage.isNotEmpty) {
-                        uplaodImage(File(_cameraImage), context,
-                                _provider.getNewCategory.toString())
-                            .then((value) {
-                          _provider.imagePicked('');
-                        });
-                      }
+                      _provider.uploadImageToFirebase(context, '');
                     },
-                    pickImage: () async {
-                      final pickedImage = await ImagePicker.platform
-                          .getImageFromSource(source: ImageSource.camera);
-                      if (pickedImage != null) {
-                        _provider.imagePicked(pickedImage.path);
-                        print(_cameraImage);
-                      }
+                    pickImage: () {
+                      _provider.imagePicked();
                     },
                     context: context,
                     controller: _newCategoryController,
                     addCategoryFunction: () {
                       if (_newCategoryController.text.isNotEmpty &&
+                          // ignore: unrelated_type_equality_checks
                           _newCategoryController.text !=
                               category.contains(_newCategoryController.text)) {
                         createCategory(_newCategoryController.text, context);
@@ -98,18 +89,33 @@ class _HomeScreenState extends State<HomeScreen> {
                   final data = snapshot.data;
                   return ListView(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: GestureDetector(
-                              onTap: () {
-                                // print(data!.docs[1]['url'] as List<dynamic>);
-                                _key.currentState!.openDrawer();
-                              },
-                              child: Icon(Icons.menu)),
-                        ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * .025,
                       ),
+                      _providerWrdRobe.check == true
+                          ? const SizedBox.shrink()
+                          : Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 20, bottom: 20),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: GestureDetector(
+                                    onTap: () {
+                                      // print(data!.docs[1]['url'] as List<dynamic>);
+                                      _key.currentState!.openDrawer();
+                                    },
+                                    child: Container(
+                                        padding: const EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.white.withAlpha(150),
+                                        ),
+                                        child: const Icon(
+                                          Icons.menu,
+                                          color: Colors.white,
+                                        ))),
+                              ),
+                            ),
                       pickImageForWardRobe(
                         context,
                         shirtImageCamera,
@@ -122,9 +128,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                 pickImageFromCamera: pickedImage.path,
                                 pickedImagefromApp: '');
                           }
+                          _providerWrdRobe.getCheck(false);
                           OverlayScreen.inatance().hide();
                         },
                         () {
+                          _providerWrdRobe.getCheck(false);
                           OverlayScreen.inatance().hide();
                           wardRobeAppImagePicker(
                             snapshot: snapshot,
@@ -143,6 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         pentImageCamera,
                         pentImageApp,
                         () async {
+                          _providerWrdRobe.getCheck(false);
                           final pickedImage = await ImagePicker.platform
                               .getImageFromSource(source: ImageSource.camera);
                           if (pickedImage != null) {
@@ -153,6 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           OverlayScreen.inatance().hide();
                         },
                         () {
+                          _providerWrdRobe.getCheck(false);
                           OverlayScreen.inatance().hide();
                           wardRobeAppImagePicker(
                             snapshot: snapshot,
@@ -171,6 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         shoesImageCamera,
                         shoesImageApp,
                         () async {
+                          _providerWrdRobe.getCheck(false);
                           final pickedImage = await ImagePicker.platform
                               .getImageFromSource(source: ImageSource.camera);
                           if (pickedImage != null) {
@@ -181,6 +192,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           OverlayScreen.inatance().hide();
                         },
                         () {
+                          _providerWrdRobe.getCheck(false);
                           OverlayScreen.inatance().hide();
                           wardRobeAppImagePicker(
                             snapshot: snapshot,
@@ -205,13 +217,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
   GestureDetector pickImageForWardRobe(BuildContext context, String cameraImage,
       String appImage, Function pickedCameraImage, Function pickedAppImage) {
+    final _providerWardRobe =
+        Provider.of<WardRobeProvider>(context, listen: false);
     return GestureDetector(
-        onTap: () => OverlayScreen.inatance().show(
-              context: context,
-              text: 'hi',
-              functionForPicCameraImage: pickedCameraImage,
-              functionForPickAppImage: pickedAppImage,
-            ),
+        onTap: () {
+          _providerWardRobe.getCheck(true);
+          OverlayScreen.inatance().show(
+            context: context,
+            text: 'hi',
+            functionForPicCameraImage: pickedCameraImage,
+            functionForPickAppImage: pickedAppImage,
+          );
+        },
         child: appImage.isNotEmpty || cameraImage.isNotEmpty
             ? Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -266,7 +283,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
             child: Column(
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 SizedBox(
