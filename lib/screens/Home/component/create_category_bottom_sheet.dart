@@ -2,6 +2,7 @@ import 'package:firebase_signin/reusable_widgets/reusable_widget.dart';
 import 'package:flutter/material.dart';
 
 import '../../../utils/color_utils.dart';
+import '../../../utils/loader/loading_screen.dart';
 
 createCategoryBottomSheet(
     BuildContext context, TextEditingController controller, Function function) {
@@ -42,7 +43,12 @@ createCategoryBottomSheet(
               ),
               reusableTextField(
                   'Add Category Name', Icons.category, false, controller),
-              firebaseUIButton(context, 'Add', function)
+              firebaseUIButton(context, 'Add', () {
+                function();
+                Navigator.pop(context);
+                LoadingScreen.inatance()
+                    .show(context: context, text: 'Creating...');
+              })
             ],
           ),
         );

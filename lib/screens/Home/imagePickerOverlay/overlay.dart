@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../../../provider/category_provider.dart';
 import '../../../provider/wardRobe_provider.dart';
+import '../../../utils/back_button.dart';
 import '../../../utils/color_utils.dart';
 import 'picker_controller.dart';
 
@@ -63,41 +64,42 @@ class OverlayScreen {
         final _provider = Provider.of<WardRobeProvider>(context);
         return Material(
           color: Colors.black.withAlpha(150),
-          child: SafeArea(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: GestureDetector(
-                      onTap: () {
-                        OverlayScreen.inatance().hide();
-                      },
-                      child: const Icon(
-                        Icons.keyboard_arrow_left,
-                        color: Colors.white,
-                        size: 34,
-                      ),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: MediaQuery.of(context).size.height * .05,
+              ),
+              backButton(
+                onTap: () {
+                  _provider.getCheck(false);
+                  OverlayScreen.inatance().hide();
+                },
+              ),
+              Expanded(
+                  child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    pickerButton(
+                      context,
+                      imagePickedFrom: pickedFromCamera,
+                      title: "Camera Image",
                     ),
-                  ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    pickerButton(
+                      context,
+                      imagePickedFrom: functionForPickedAppImage,
+                      title: "App Image",
+                    ),
+                  ],
                 ),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.2,
-                ),
-                pickerButton(context,
-                    imagePickedFrom: pickedFromCamera,
-                    title: "Pick Image Using Camera"),
-                SizedBox(
-                  height: 10,
-                ),
-                pickerButton(context,
-                    imagePickedFrom: functionForPickedAppImage,
-                    title: "Pick Image From App")
-              ],
-            ),
+              ))
+            ],
           ),
         );
       },
@@ -128,10 +130,10 @@ GestureDetector pickerButton(
     },
     child: Container(
       decoration: BoxDecoration(
-          color: Colors.white38, borderRadius: BorderRadius.circular(20)),
-      height: 80,
+          color: Colors.white, borderRadius: BorderRadius.circular(20)),
+      height: 60,
       width: MediaQuery.of(context).size.width * 0.70,
-      padding: EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.symmetric(vertical: 10),
       child: Center(
         child: Text(title),
       ),

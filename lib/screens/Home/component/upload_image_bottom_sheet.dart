@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../../../provider/category_provider.dart';
 import '../../../reusable_widgets/reusable_widget.dart';
 import '../../../utils/color_utils.dart';
+import '../../../utils/loader/loading_screen.dart';
 
 showBottomSheetForImagePicker(
     {required BuildContext context,
@@ -121,7 +122,12 @@ showBottomSheetForImagePicker(
                   firebaseUIButton(
                     context,
                     'Add',
-                    addImageTofireBase,
+                    () {
+                      addImageTofireBase();
+                      Navigator.pop(context);
+                      LoadingScreen.inatance()
+                          .show(context: context, text: 'Uploading...');
+                    },
                   ),
                 ],
               ),

@@ -47,4 +47,11 @@ class WardRobeProvider extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  bool _check = false;
+  bool get check => _check;
+  void getCheck(bool value) {
+    _check = value;
+    notifyListeners();
+  }
 }

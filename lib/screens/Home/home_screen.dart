@@ -10,9 +10,9 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import '../../provider/category_provider.dart';
 import '../../utils/color_utils.dart';
-import 'PickerOverlay/overlay.dart';
-import 'component/drawer.dart';
-import 'component/wardrobe.dart';
+import '../../utils/loader/loading_screen.dart';
+import 'imagePickerOverlay/overlay.dart';
+import '../Drawer/drawer.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -50,29 +50,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 final List<dynamic> category =
                     snapshot.data!.docs.map((doc) => doc.id).toList();
                 return drawer(
+                    onTap: () {
+                      _key.currentState!.closeDrawer();
+                    },
                     category: category,
                     addImageTofireBase: () {
-                      print(_cameraImage);
-                      if (_cameraImage.isNotEmpty) {
-                        uplaodImage(File(_cameraImage), context,
-                                _provider.getNewCategory.toString())
-                            .then((value) {
-                          _provider.imagePicked('');
-                        });
-                      }
+                      _provider.uploadImageToFirebase(context, '');
                     },
-                    pickImage: () async {
-                      final pickedImage = await ImagePicker.platform
-                          .getImageFromSource(source: ImageSource.camera);
-                      if (pickedImage != null) {
-                        _provider.imagePicked(pickedImage.path);
-                        print(_cameraImage);
-                      }
+                    pickImage: () {
+                      _provider.imagePicked();
                     },
                     context: context,
                     controller: _newCategoryController,
                     addCategoryFunction: () {
                       if (_newCategoryController.text.isNotEmpty &&
+                          // ignore: unrelated_type_equality_checks
                           _newCategoryController.text !=
                               category.contains(_newCategoryController.text)) {
                         createCategory(_newCategoryController.text, context);
@@ -98,18 +90,33 @@ class _HomeScreenState extends State<HomeScreen> {
                   final data = snapshot.data;
                   return ListView(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: GestureDetector(
-                              onTap: () {
-                                // print(data!.docs[1]['url'] as List<dynamic>);
-                                _key.currentState!.openDrawer();
-                              },
-                              child: Icon(Icons.menu)),
-                        ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * .025,
                       ),
+                      _providerWrdRobe.check == true
+                          ? const SizedBox.shrink()
+                          : Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 20, bottom: 20),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: GestureDetector(
+                                    onTap: () {
+                                      // print(data!.docs[1]['url'] as List<dynamic>);
+                                      _key.currentState!.openDrawer();
+                                    },
+                                    child: Container(
+                                        padding: const EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.white.withAlpha(150),
+                                        ),
+                                        child: const Icon(
+                                          Icons.menu,
+                                          color: Colors.white,
+                                        ))),
+                              ),
+                            ),
                       pickImageForWardRobe(
                         context,
                         shirtImageCamera,
@@ -122,9 +129,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                 pickImageFromCamera: pickedImage.path,
                                 pickedImagefromApp: '');
                           }
+                          _providerWrdRobe.getCheck(false);
                           OverlayScreen.inatance().hide();
                         },
                         () {
+                          _providerWrdRobe.getCheck(false);
                           OverlayScreen.inatance().hide();
                           wardRobeAppImagePicker(
                             snapshot: snapshot,
@@ -143,6 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         pentImageCamera,
                         pentImageApp,
                         () async {
+                          _providerWrdRobe.getCheck(false);
                           final pickedImage = await ImagePicker.platform
                               .getImageFromSource(source: ImageSource.camera);
                           if (pickedImage != null) {
@@ -153,6 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           OverlayScreen.inatance().hide();
                         },
                         () {
+                          _providerWrdRobe.getCheck(false);
                           OverlayScreen.inatance().hide();
                           wardRobeAppImagePicker(
                             snapshot: snapshot,
@@ -171,6 +182,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         shoesImageCamera,
                         shoesImageApp,
                         () async {
+                          _providerWrdRobe.getCheck(false);
                           final pickedImage = await ImagePicker.platform
                               .getImageFromSource(source: ImageSource.camera);
                           if (pickedImage != null) {
@@ -181,6 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           OverlayScreen.inatance().hide();
                         },
                         () {
+                          _providerWrdRobe.getCheck(false);
                           OverlayScreen.inatance().hide();
                           wardRobeAppImagePicker(
                             snapshot: snapshot,
@@ -205,13 +218,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
   GestureDetector pickImageForWardRobe(BuildContext context, String cameraImage,
       String appImage, Function pickedCameraImage, Function pickedAppImage) {
+    final _providerWardRobe =
+        Provider.of<WardRobeProvider>(context, listen: false);
     return GestureDetector(
-        onTap: () => OverlayScreen.inatance().show(
-              context: context,
-              text: 'hi',
-              functionForPicCameraImage: pickedCameraImage,
-              functionForPickAppImage: pickedAppImage,
-            ),
+        onTap: () {
+          _providerWardRobe.getCheck(true);
+          OverlayScreen.inatance().show(
+            context: context,
+            text: 'hi',
+            functionForPicCameraImage: pickedCameraImage,
+            functionForPickAppImage: pickedAppImage,
+          );
+        },
         child: appImage.isNotEmpty || cameraImage.isNotEmpty
             ? Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -264,115 +282,128 @@ class _HomeScreenState extends State<HomeScreen> {
                   hexStringToColor("9546C4"),
                   hexStringToColor("5E61F4")
                 ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 20,
-                ),
-                SizedBox(
-                  height: 70,
-                  width: double.infinity,
+            child: snapshot.connectionState == ConnectionState.waiting
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Column(
+                    children: [
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      SizedBox(
+                        height: 70,
+                        width: double.infinity,
 
-                  // padding: const EdgeInsets.all(20),
-                  child: data!.docs.isEmpty
-                      ? const SizedBox.shrink()
-                      : ListView(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          scrollDirection: Axis.horizontal,
-                          children: List.generate(
-                              data.docs.length,
-                              (index) => GestureDetector(
-                                    onTap: () {
-                                      _provider.selctIndex(index);
-                                    },
-                                    child: Consumer<SelectCategory>(
-                                        builder: (context, value, __) {
-                                      return Container(
-                                        decoration: BoxDecoration(
-                                            color: value.selectedIndex == index
-                                                ? Colors.black26
-                                                : Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(20)),
-                                        margin: const EdgeInsets.all(5),
-                                        padding: const EdgeInsets.all(20),
-                                        child: Center(
-                                          child: Text(
-                                            data.docs[index]['category'],
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                color:
-                                                    value.selectedIndex == index
-                                                        ? Colors.white
-                                                        : Colors.black54),
-                                          ),
+                        // padding: const EdgeInsets.all(20),
+                        child: data!.docs.isEmpty
+                            ? const SizedBox.shrink()
+                            : ListView(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                scrollDirection: Axis.horizontal,
+                                children: List.generate(
+                                    data.docs.length,
+                                    (index) => GestureDetector(
+                                          onTap: () {
+                                            _provider.selctIndex(index);
+                                          },
+                                          child: Consumer<SelectCategory>(
+                                              builder: (context, value, __) {
+                                            return Container(
+                                              decoration: BoxDecoration(
+                                                  color: value.selectedIndex ==
+                                                          index
+                                                      ? Colors.black26
+                                                      : Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20)),
+                                              margin: const EdgeInsets.all(5),
+                                              padding: const EdgeInsets.all(20),
+                                              child: Center(
+                                                child: Text(
+                                                  data.docs[index]['category'],
+                                                  style: TextStyle(
+                                                      fontSize: 20,
+                                                      color:
+                                                          value.selectedIndex ==
+                                                                  index
+                                                              ? Colors.white
+                                                              : Colors.black54),
+                                                ),
+                                              ),
+                                            );
+                                          }),
                                         ),
-                                      );
-                                    }),
-                                  ),
-                              growable: true),
-                        ),
-                ),
-                data.docs.isEmpty
-                    ? const SizedBox.shrink()
-                    : SizedBox(
-                        height: 200,
-                        child: data.docs.isNotEmpty
-                            ? Consumer<SelectCategory>(
-                                builder: (context, value, __) {
-                                return ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: data
-                                        .docs[value.selectedIndex]['url']
-                                        .length,
-                                    itemBuilder: (context, index) {
-                                      var image =
-                                          data.docs[value.selectedIndex]['url'];
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.waiting) {
-                                        return const Center(
-                                          child: CircularProgressIndicator(),
-                                        );
-                                      } else {
-                                        return Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              onTap(image[index]);
-                                            },
-                                            child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                child: Image.network(
-                                                  image[index],
-                                                  height: 200,
-                                                  width: 200,
-                                                  fit: BoxFit.cover,
-                                                )),
-                                          ),
-                                        );
-                                      }
-                                    });
-                              })
-                            : const SizedBox.shrink(),
-                      )
-              ],
-            ));
+                                    growable: true),
+                              ),
+                      ),
+                      data.docs.isEmpty
+                          ? const SizedBox.shrink()
+                          : SizedBox(
+                              height: 200,
+                              child: data.docs.isNotEmpty
+                                  ? Consumer<SelectCategory>(
+                                      builder: (context, value, __) {
+                                      return ListView.builder(
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: data
+                                              .docs[value.selectedIndex]['url']
+                                              .length,
+                                          itemBuilder: (context, index) {
+                                            var image =
+                                                data.docs[value.selectedIndex]
+                                                    ['url'];
+                                            if (snapshot.connectionState ==
+                                                ConnectionState.waiting) {
+                                              return const Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              );
+                                            } else {
+                                              return Padding(
+                                                padding:
+                                                    const EdgeInsets.all(10.0),
+                                                child: GestureDetector(
+                                                  onTap: () {
+                                                    onTap(image[index]);
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20),
+                                                      child: Image.network(
+                                                        image[index],
+                                                        height: 200,
+                                                        width: 200,
+                                                        fit: BoxFit.cover,
+                                                      )),
+                                                ),
+                                              );
+                                            }
+                                          });
+                                    })
+                                  : const SizedBox.shrink(),
+                            )
+                    ],
+                  ));
       },
     );
   }
 }
 
-Future<bool> createCategory(String category, BuildContext context) async {
+Future<void> createCategory(String category, BuildContext context) async {
   var uid = FirebaseAuth.instance.currentUser!.uid;
   final CollectionReference ref = FirebaseFirestore.instance.collection(uid);
   if (uid.isNotEmpty) {
-    return await ref
-        .doc(category)
-        .set({'category': category, 'url': FieldValue.arrayUnion([])}).then(
-            (value) => true);
+    return await ref.doc(category).set(
+        {'category': category, 'url': FieldValue.arrayUnion([])}).then((value) {
+      return LoadingScreen.inatance().hide();
+    });
   } else {
-    return false;
+    return;
   }
 }
 
@@ -390,6 +421,7 @@ Future<void> uplaodImage(
   ];
   final CollectionReference collectionReference =
       FirebaseFirestore.instance.collection(documentId);
-  return await collectionReference.doc(selectedCategory).update(
-      {'url': FieldValue.arrayUnion(data)}).then((value) => print(true));
+  return await collectionReference
+      .doc(selectedCategory)
+      .update({'url': FieldValue.arrayUnion(data)}).then((value) => print(''));
 }

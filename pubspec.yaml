@@ -42,6 +42,12 @@ dependencies:
   picker: ^1.0.6
   image_picker: ^1.0.1
   provider: ^6.0.5
+  shared_preferences: ^2.2.0
+  ionicons: ^0.2.2
+  path_provider: ^2.0.15
+  http: ^0.13.6
+  shimmer: ^3.0.0
+  image_cropper: ^4.0.1
 
 dev_dependencies:
   flutter_test:
