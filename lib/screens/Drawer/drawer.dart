@@ -87,6 +87,7 @@ Widget drawer(
                             context,
                             controller,
                             addCategoryFunction,
+                            category
                           );
                         }
                         if (index == 2) {

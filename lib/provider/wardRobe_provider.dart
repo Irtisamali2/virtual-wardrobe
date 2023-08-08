@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 
 class WardRobeProvider extends ChangeNotifier {
   String _shirtImageCamera = '';
@@ -13,7 +14,31 @@ class WardRobeProvider extends ChangeNotifier {
     if (pickImageFromCamera.isNotEmpty) {
       _shirtImageCamera = pickImageFromCamera;
     } else if (pickedImagefromApp.isNotEmpty) {
-      _shirtImageApp = pickedImagefromApp;
+      shirtImageCrop(pickedImagefromApp);
+    }
+    notifyListeners();
+  }
+
+  void shirtImageCrop(String filePath) async {
+    final croppedImage = await ImageCropper().cropImage(
+      sourcePath: filePath,
+      compressFormat: ImageCompressFormat.jpg,
+      compressQuality: 100,
+      uiSettings: [
+        AndroidUiSettings(
+            // toolbarTitle: 'Cropper',
+            toolbarColor: Colors.transparent,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        IOSUiSettings(
+          title: 'Cropper',
+        ),
+      ],
+    );
+    if (croppedImage != null) {
+      _shirtImageApp = croppedImage.path;
+      notifyListeners();
     }
     notifyListeners();
   }
@@ -28,7 +53,31 @@ class WardRobeProvider extends ChangeNotifier {
     if (pickImageFromCamera.isNotEmpty) {
       _pentImageCamera = pickImageFromCamera;
     } else if (pickedImagefromApp.isNotEmpty) {
-      _pentImageApp = pickedImagefromApp;
+      pentImageCrop(pickedImagefromApp);
+    }
+    notifyListeners();
+  }
+
+  void pentImageCrop(String filePath) async {
+    final croppedImage = await ImageCropper().cropImage(
+      sourcePath: filePath,
+      compressFormat: ImageCompressFormat.jpg,
+      compressQuality: 100,
+      uiSettings: [
+        AndroidUiSettings(
+            // toolbarTitle: 'Cropper',
+            toolbarColor: Colors.transparent,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        IOSUiSettings(
+          title: 'Cropper',
+        ),
+      ],
+    );
+    if (croppedImage != null) {
+      _pentImageApp = croppedImage.path;
+      notifyListeners();
     }
     notifyListeners();
   }
@@ -43,7 +92,31 @@ class WardRobeProvider extends ChangeNotifier {
     if (pickImageFromCamera.isNotEmpty) {
       _shoesImageCamera = pickImageFromCamera;
     } else if (pickedImagefromApp.isNotEmpty) {
-      _shoesImageApp = pickedImagefromApp;
+      shoesImageCrop(pickedImagefromApp);
+    }
+    notifyListeners();
+  }
+
+  void shoesImageCrop(String filePath) async {
+    final croppedImage = await ImageCropper().cropImage(
+      sourcePath: filePath,
+      compressFormat: ImageCompressFormat.jpg,
+      compressQuality: 100,
+      uiSettings: [
+        AndroidUiSettings(
+            // toolbarTitle: 'Cropper',
+            toolbarColor: Colors.transparent,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        IOSUiSettings(
+          title: 'Cropper',
+        ),
+      ],
+    );
+    if (croppedImage != null) {
+      _shoesImageApp = croppedImage.path;
+      notifyListeners();
     }
     notifyListeners();
   }

@@ -125,8 +125,11 @@ showBottomSheetForImagePicker(
                     () {
                       addImageTofireBase();
                       Navigator.pop(context);
-                      LoadingScreen.inatance()
-                          .show(context: context, text: 'Uploading...');
+                      if (_provider.cameraImage != null &&
+                          _provider.getNewCategory != null) {
+                        LoadingScreen.inatance()
+                            .show(context: context, text: 'Uploading...');
+                      }
                     },
                   ),
                 ],

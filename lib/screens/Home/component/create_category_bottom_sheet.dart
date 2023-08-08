@@ -5,7 +5,10 @@ import '../../../utils/color_utils.dart';
 import '../../../utils/loader/loading_screen.dart';
 
 createCategoryBottomSheet(
-    BuildContext context, TextEditingController controller, Function function) {
+    BuildContext context,
+    TextEditingController controller,
+    Function function,
+    List<dynamic> category) {
   return showModalBottomSheet(
       backgroundColor: Colors.transparent,
       context: context,
@@ -46,8 +49,12 @@ createCategoryBottomSheet(
               firebaseUIButton(context, 'Add', () {
                 function();
                 Navigator.pop(context);
-                LoadingScreen.inatance()
-                    .show(context: context, text: 'Creating...');
+                if (controller.text.isNotEmpty &&
+                    // ignore: unrelated_type_equality_checks
+                    controller.text != category.contains(controller.text)) {
+                  LoadingScreen.inatance()
+                      .show(context: context, text: 'Creating...');
+                }
               })
             ],
           ),

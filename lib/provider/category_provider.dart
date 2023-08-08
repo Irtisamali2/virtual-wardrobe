@@ -2,7 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
+
+import 'package:image_cropper/image_cropper.dart';
 
 import '../screens/Home/home_screen.dart';
 import '../utils/loader/loading_screen.dart';
@@ -42,8 +43,30 @@ class SelectCategory extends ChangeNotifier {
   Future imagePicked() async {
     var pickedImage = await ImagePicker.platform
         .getImageFromSource(source: ImageSource.camera);
-    if (pickedImage != null) {
-      _cameraImage = pickedImage.path;
+    cropImage(pickedImage!.path);
+    notifyListeners();
+  }
+
+  void cropImage(String filePath) async {
+    final croppedImage = await ImageCropper().cropImage(
+      sourcePath: filePath,
+      compressFormat: ImageCompressFormat.jpg,
+      compressQuality: 100,
+      uiSettings: [
+        AndroidUiSettings(
+            // toolbarTitle: 'Cropper',
+            toolbarColor: Colors.transparent,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        IOSUiSettings(
+          title: 'Cropper',
+        ),
+      ],
+    );
+    if (croppedImage != null) {
+      _cameraImage = croppedImage.path;
+      notifyListeners();
     }
     notifyListeners();
   }
