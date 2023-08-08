@@ -27,9 +27,13 @@ class SharedPrefProvider extends ChangeNotifier {
   String get imageUrl => _imageUrl;
   Uint8List? _uniList;
   Uint8List get uniList => _uniList!;
+  
   Future getPrefData(int index) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    var data = await prefs.getString('Shirt');
+     var data = await prefs.getString('Shirt');
+    if(data!=null)
+    try{
+    
     final DataModel model = dataModelFromJson(data ?? '');
     print(model.url!.length);
 
@@ -45,6 +49,10 @@ class SharedPrefProvider extends ChangeNotifier {
     print(uniList);
 
     notifyListeners();
+    }catch(e){
+
+    }
+   
   }
 
   // String _email = '';

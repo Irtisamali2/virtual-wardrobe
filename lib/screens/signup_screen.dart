@@ -60,17 +60,36 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   height: 20,
                 ),
                 firebaseUIButton(context, "Sign Up", () {
-                  FirebaseAuth.instance
+                if(_emailTextController.text.isNotEmpty && _passwordTextController.text.isNotEmpty && _userNameTextController.text.isNotEmpty )
+
+                    FirebaseAuth.instance
                       .createUserWithEmailAndPassword(
-                          email: _emailTextController.text,
-                          password: _passwordTextController.text)
+                        email: _emailTextController.text,
+                        password: _passwordTextController.text,
+                      )
                       .then((value) {
-                    print("Created New Account");
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => HomeScreen()));
-                  }).onError((error, stackTrace) {
-                    print("Error ${error.toString()}");
-                  });
+                        print("Created New Account");
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context) => HomeScreen()));
+                      })
+                      .catchError((error) {
+                        String errorMessage = "An error occurred. Please try again.";
+
+                        if (error is FirebaseAuthException) {
+                          if (error.code == 'email-already-in-use') {
+                            errorMessage = "Email is already in use by another account.";
+                          }
+                        }
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(errorMessage),
+                          ),
+                        );
+
+                        print("Error: ${error.toString()}");
+                      });
+
                 })
               ],
             ),

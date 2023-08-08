@@ -1,6 +1,11 @@
 import 'dart:convert';
 
-DataModel dataModelFromJson(String str) => DataModel.fromJson(json.decode(str));
+DataModel dataModelFromJson(String str) {
+  
+  final jsonData = json.decode(str);
+  return DataModel.fromJson(jsonData);
+}
+  // DataModel dataModelFromJson(String str) => DataModel.fromJson(json.decode(str));
 
 String dataModelToJson(DataModel data) => json.encode(data.toJson());
 
@@ -13,11 +18,12 @@ class DataModel {
     this.url,
   });
 
-  factory DataModel.fromJson(Map<String, dynamic> json) => DataModel(
-        category: json["category"],
-        url: List<dynamic>.from(json["url"].map((x) => x)),
-      );
-
+  factory DataModel.fromJson(Map<String, dynamic> json) {
+    return DataModel(
+      category: json["category"],
+      url: List<dynamic>.from(json["url"].map((x) => x)),
+    );
+  }
   Map<String, dynamic> toJson() => {
         "category": category,
         "url": List<dynamic>.from(url!.map((x) => x)),

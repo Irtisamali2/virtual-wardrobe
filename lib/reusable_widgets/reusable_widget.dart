@@ -18,8 +18,11 @@ TextField reusableTextField(String text, IconData icon, bool isPasswordType,
     enableSuggestions: !isPasswordType,
     autocorrect: !isPasswordType,
     cursorColor: Colors.white,
+    
     style: TextStyle(color: Colors.white.withOpacity(0.9)),
     decoration: InputDecoration(
+     errorText: controller.text.isEmpty ? 'This field is required.' : null,
+
       prefixIcon: Icon(
         icon,
         color: Colors.white70,
@@ -48,6 +51,7 @@ Container firebaseUIButton(BuildContext context, String title, Function onTap) {
     child: ElevatedButton(
       onPressed: () {
         onTap();
+        
       },
       child: Text(
         title,
