@@ -14,7 +14,7 @@ class WardRobeProvider extends ChangeNotifier {
     if (pickImageFromCamera.isNotEmpty) {
       shirtImageCrop(pickImageFromCamera);
     } else if (pickedImagefromApp.isNotEmpty) {
-      _shoesImageApp = pickedImagefromApp;
+      _shirtImageApp = pickedImagefromApp;
     }
     notifyListeners();
   }
