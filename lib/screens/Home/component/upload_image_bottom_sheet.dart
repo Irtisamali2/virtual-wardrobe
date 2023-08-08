@@ -125,8 +125,8 @@ showBottomSheetForImagePicker(
                     () {
                       addImageTofireBase();
                       Navigator.pop(context);
-                      if (_provider.cameraImage != null &&
-                          _provider.getNewCategory != null) {
+                      if (_provider.cameraImage.isNotEmpty &&
+                          selectCategory.isNotEmpty) {
                         LoadingScreen.inatance()
                             .show(context: context, text: 'Uploading...');
                       }

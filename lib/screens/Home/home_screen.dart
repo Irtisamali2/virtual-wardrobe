@@ -68,6 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           _newCategoryController.text !=
                               category.contains(_newCategoryController.text)) {
                         createCategory(_newCategoryController.text, context);
+                        ;
                       }
                     });
               }

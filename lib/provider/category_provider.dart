@@ -43,7 +43,10 @@ class SelectCategory extends ChangeNotifier {
   Future imagePicked() async {
     var pickedImage = await ImagePicker.platform
         .getImageFromSource(source: ImageSource.camera);
-    cropImage(pickedImage!.path);
+    if (pickedImage != null) {
+      cropImage(pickedImage.path);
+      notifyListeners();
+    }
     notifyListeners();
   }
 
@@ -56,7 +59,7 @@ class SelectCategory extends ChangeNotifier {
         AndroidUiSettings(
             // toolbarTitle: 'Cropper',
             toolbarColor: Colors.transparent,
-            toolbarWidgetColor: Colors.white,
+            toolbarWidgetColor: Colors.black,
             initAspectRatio: CropAspectRatioPreset.original,
             lockAspectRatio: false),
         IOSUiSettings(
@@ -73,6 +76,7 @@ class SelectCategory extends ChangeNotifier {
 
   void uploadImageToFirebase(BuildContext context, String emptyImage) {
     if (_cameraImage.isNotEmpty && getNewCategory.isNotEmpty) {
+     
       uplaodImage(File(_cameraImage), context, getNewCategory.toString())
           .then((value) {
         _cameraImage = emptyImage;
@@ -80,6 +84,7 @@ class SelectCategory extends ChangeNotifier {
         // Navigator.of(context).pop;
         notifyListeners();
       });
+      notifyListeners();
     }
     notifyListeners();
   }

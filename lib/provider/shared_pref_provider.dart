@@ -1,14 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Models/data_models.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class SharedPrefProvider extends ChangeNotifier {
   Future setSharedPref(

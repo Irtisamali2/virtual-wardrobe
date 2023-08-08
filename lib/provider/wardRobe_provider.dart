@@ -12,9 +12,9 @@ class WardRobeProvider extends ChangeNotifier {
       {required String pickedImagefromApp,
       required String pickImageFromCamera}) async {
     if (pickImageFromCamera.isNotEmpty) {
-      _shirtImageCamera = pickImageFromCamera;
+      shirtImageCrop(pickImageFromCamera);
     } else if (pickedImagefromApp.isNotEmpty) {
-      shirtImageCrop(pickedImagefromApp);
+      _shoesImageApp = pickedImagefromApp;
     }
     notifyListeners();
   }
@@ -28,7 +28,7 @@ class WardRobeProvider extends ChangeNotifier {
         AndroidUiSettings(
             // toolbarTitle: 'Cropper',
             toolbarColor: Colors.transparent,
-            toolbarWidgetColor: Colors.white,
+            toolbarWidgetColor: Colors.black,
             initAspectRatio: CropAspectRatioPreset.original,
             lockAspectRatio: false),
         IOSUiSettings(
@@ -37,7 +37,7 @@ class WardRobeProvider extends ChangeNotifier {
       ],
     );
     if (croppedImage != null) {
-      _shirtImageApp = croppedImage.path;
+      _shirtImageCamera = croppedImage.path;
       notifyListeners();
     }
     notifyListeners();
@@ -51,9 +51,9 @@ class WardRobeProvider extends ChangeNotifier {
       {required String pickedImagefromApp,
       required String pickImageFromCamera}) async {
     if (pickImageFromCamera.isNotEmpty) {
-      _pentImageCamera = pickImageFromCamera;
+      pentImageCrop(pickImageFromCamera);
     } else if (pickedImagefromApp.isNotEmpty) {
-      pentImageCrop(pickedImagefromApp);
+      _pentImageApp = pickedImagefromApp;
     }
     notifyListeners();
   }
@@ -67,7 +67,7 @@ class WardRobeProvider extends ChangeNotifier {
         AndroidUiSettings(
             // toolbarTitle: 'Cropper',
             toolbarColor: Colors.transparent,
-            toolbarWidgetColor: Colors.white,
+            toolbarWidgetColor: Colors.black,
             initAspectRatio: CropAspectRatioPreset.original,
             lockAspectRatio: false),
         IOSUiSettings(
@@ -76,7 +76,7 @@ class WardRobeProvider extends ChangeNotifier {
       ],
     );
     if (croppedImage != null) {
-      _pentImageApp = croppedImage.path;
+      _pentImageCamera = croppedImage.path;
       notifyListeners();
     }
     notifyListeners();
@@ -90,9 +90,9 @@ class WardRobeProvider extends ChangeNotifier {
       {required String pickedImagefromApp,
       required String pickImageFromCamera}) async {
     if (pickImageFromCamera.isNotEmpty) {
-      _shoesImageCamera = pickImageFromCamera;
+      shoesImageCrop(pickImageFromCamera);
     } else if (pickedImagefromApp.isNotEmpty) {
-      shoesImageCrop(pickedImagefromApp);
+      _shoesImageApp = pickedImagefromApp;
     }
     notifyListeners();
   }
@@ -106,7 +106,7 @@ class WardRobeProvider extends ChangeNotifier {
         AndroidUiSettings(
             // toolbarTitle: 'Cropper',
             toolbarColor: Colors.transparent,
-            toolbarWidgetColor: Colors.white,
+            toolbarWidgetColor: Colors.black,
             initAspectRatio: CropAspectRatioPreset.original,
             lockAspectRatio: false),
         IOSUiSettings(
@@ -115,7 +115,7 @@ class WardRobeProvider extends ChangeNotifier {
       ],
     );
     if (croppedImage != null) {
-      _shoesImageApp = croppedImage.path;
+      _shoesImageCamera = croppedImage.path;
       notifyListeners();
     }
     notifyListeners();

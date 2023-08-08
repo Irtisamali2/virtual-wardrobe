@@ -7,6 +7,9 @@ import 'package:firebase_signin/utils/color_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:google_fonts/google_fonts.dart';
+
+
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
 
@@ -35,9 +38,26 @@ class _SignInScreenState extends State<SignInScreen> {
                 20, MediaQuery.of(context).size.height * 0.2, 20, 0),
             child: Column(
               children: <Widget>[
-                logoWidget("assets/images/logo1.png"),
-                const SizedBox(
-                  height: 30,
+                Text(
+                  "Virtual Wardrobe",
+                  style: GoogleFonts.lato(
+                    textStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 34,
+                      fontWeight: FontWeight.bold,
+                      fontStyle: FontStyle.italic,
+                      letterSpacing: 1.5,
+                    ),
+                  ),
+                ),
+                Container(
+                  width: 150,
+                  height: 10,
+                  child: Divider(color: Colors.white,)),
+
+                //logoWidget("assets/images/logo1.png"),
+                 SizedBox(
+                  height: MediaQuery.of(context).size.height *0.15,
                 ),
                 reusableTextField("Enter UserName", Icons.person_outline, false,
                     _emailTextController),
@@ -65,6 +85,52 @@ class _SignInScreenState extends State<SignInScreen> {
                   }).onError((error, stackTrace) {
                     print("Error ${error.toString()}");
                   });
+
+                    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('email', _emailTextController.text);
+
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailTextController.text,
+        password: _passwordTextController.text,
+      );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
+    } on FirebaseAuthException catch (e) {
+      String errorMessage = "An error occurred. Please try again.";
+
+      if (e.code == 'user-not-found') {
+        errorMessage = "User with this email doesn't exist.";
+      } else if (e.code == 'wrong-password') {
+        errorMessage = "Wrong password. Please try again.";
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage),
+        ),
+      );
+    } catch (e) {
+      print("Error: ${e.toString()}");
+    }
+                  // SharedPreferences prefs =
+                  //     await SharedPreferences.getInstance();
+                  // prefs.setString('email', _emailTextController.text);
+                  // FirebaseAuth.instance
+                  //     .signInWithEmailAndPassword(
+                  //         email: _emailTextController.text,
+                  //         password: _passwordTextController.text)
+                  //     .then((value) {
+                  //   print('SignIn');
+                  //   Navigator.pushReplacement(context,
+                  //       MaterialPageRoute(builder: (context) => HomeScreen()));
+                  // }).onError((error, stackTrace) {
+                  //   print("Error ${error.toString()}");
+                  // });
+
                 }),
                 signUpOption()
               ],
