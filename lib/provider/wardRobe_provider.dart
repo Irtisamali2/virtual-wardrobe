@@ -15,6 +15,7 @@ class WardRobeProvider extends ChangeNotifier {
       shirtImageCrop(pickImageFromCamera);
     } else if (pickedImagefromApp.isNotEmpty) {
       _shirtImageApp = pickedImagefromApp;
+      _shirtImageCamera = '';
     }
     notifyListeners();
   }
@@ -54,6 +55,7 @@ class WardRobeProvider extends ChangeNotifier {
       pentImageCrop(pickImageFromCamera);
     } else if (pickedImagefromApp.isNotEmpty) {
       _pentImageApp = pickedImagefromApp;
+      _pentImageCamera = '';
     }
     notifyListeners();
   }
@@ -93,6 +95,7 @@ class WardRobeProvider extends ChangeNotifier {
       shoesImageCrop(pickImageFromCamera);
     } else if (pickedImagefromApp.isNotEmpty) {
       _shoesImageApp = pickedImagefromApp;
+      _shoesImageCamera = '';
     }
     notifyListeners();
   }
