@@ -9,24 +9,34 @@ import '../screens/Home/home_screen.dart';
 import '../utils/loader/loading_screen.dart';
 
 class SelectCategory extends ChangeNotifier {
-  int _index = 0;
-  int _categoryUploadImageIndex = -1;
-  int _drawerIndex = -1;
 
+  int _index = 0;
+  int get selectedIndex => _index;
+  //index for using category selection to upload Image
+  int _categoryUploadImageIndex = -1;
+  int get categoryUploadImageIndex => _categoryUploadImageIndex;
+  
+//for getting selected Category Value
   String _category = '';
   String get getNewCategory => _category;
-  int get selectedIndex => _index;
-  int get categoryUploadImageIndex => _categoryUploadImageIndex;
+
+  
+  
+  //for drawer Buttons Index
+  int _drawerIndex = -1;
   int get drawerIndex => _drawerIndex;
+
+  //function for getting selected Drawer Button Index
   void getDrawerIndex(int index) {
     _drawerIndex = index;
     notifyListeners();
   }
-
+//function for gettting index of selected Category
   void categoryImageUpload(int index) {
     _categoryUploadImageIndex = index;
     notifyListeners();
   }
+
 
   void selctIndex(int index) {
     _index = index;
@@ -38,8 +48,11 @@ class SelectCategory extends ChangeNotifier {
     notifyListeners();
   }
 
+//for path of the image picked by camera to upload
   String _cameraImage = '';
   String get cameraImage => _cameraImage;
+
+//function for pickinng image using Camera to upload
   Future imagePicked() async {
     var pickedImage = await ImagePicker.platform
         .getImageFromSource(source: ImageSource.camera);
@@ -50,6 +63,7 @@ class SelectCategory extends ChangeNotifier {
     notifyListeners();
   }
 
+//function for Cropp picked image before upload
   void cropImage(String filePath) async {
     final croppedImage = await ImageCropper().cropImage(
       sourcePath: filePath,
@@ -74,6 +88,7 @@ class SelectCategory extends ChangeNotifier {
     notifyListeners();
   }
 
+//function for Upload Image to FireStorage and save path to cloud firestore
   void uploadImageToFirebase(BuildContext context, String emptyImage) {
     if (_cameraImage.isNotEmpty && getNewCategory.isNotEmpty) {
      

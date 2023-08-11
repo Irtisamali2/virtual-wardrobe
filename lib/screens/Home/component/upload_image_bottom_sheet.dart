@@ -64,6 +64,7 @@ showBottomSheetForImagePicker(
                         category.length,
                         (index) => GestureDetector(
                           onTap: () {
+                            
                             _provider.categoryImageUpload(index);
                             _provider.selectCategory(category[index]);
                           },
@@ -127,6 +128,7 @@ showBottomSheetForImagePicker(
                       Navigator.pop(context);
                       if (_provider.cameraImage.isNotEmpty &&
                           selectCategory.isNotEmpty) {
+                            //diplay loading screen
                         LoadingScreen.inatance()
                             .show(context: context, text: 'Uploading...');
                       }

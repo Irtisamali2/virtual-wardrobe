@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+// Adding Logo on Top Login Screen
 Image logoWidget(String imageName) {
   return Image.asset(
     imageName,
@@ -9,7 +9,7 @@ Image logoWidget(String imageName) {
     color: Colors.white,
   );
 }
-
+//TextField
 TextField reusableTextField(String text, IconData icon, bool isPasswordType,
     TextEditingController controller) {
   return TextField(
@@ -41,7 +41,7 @@ TextField reusableTextField(String text, IconData icon, bool isPasswordType,
         : TextInputType.emailAddress,
   );
 }
-
+//AppButton
 Container firebaseUIButton(BuildContext context, String title, Function onTap) {
   return Container(
     width: MediaQuery.of(context).size.width,

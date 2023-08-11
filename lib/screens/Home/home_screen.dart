@@ -217,7 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ));
   }
 
-  GestureDetector pickImageForWardRobe(BuildContext context, String cameraImage,
+  Widget pickImageForWardRobe(BuildContext context, String cameraImage,
       String appImage, Function pickedCameraImage, Function pickedAppImage) {
     final _providerWardRobe =
         Provider.of<WardRobeProvider>(context, listen: false);
@@ -395,6 +395,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+//for createing category
 Future<void> createCategory(String category, BuildContext context) async {
   var uid = FirebaseAuth.instance.currentUser!.uid;
   final CollectionReference ref = FirebaseFirestore.instance.collection(uid);
@@ -408,6 +409,8 @@ Future<void> createCategory(String category, BuildContext context) async {
   }
 }
 
+//for uploading image to FirebaseStorage and get path url and save it to Cloud Firestore pass this function to category provider
+//uploadImageToFirebase() Function you can remove the function and directly add inside data in uploadImageToFirebase() Function where uploadImage() function exist
 Future<void> uplaodImage(
     File file, BuildContext context, String selectedCategory) async {
   final FirebaseStorage _storage = FirebaseStorage.instance;

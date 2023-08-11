@@ -7,6 +7,8 @@ import '../Models/data_models.dart';
 import 'package:http/http.dart' as http;
 
 class SharedPrefProvider extends ChangeNotifier {
+  //For Get image Path From Cloud Firestore and Convert it into Bytes to save locally
+  // its not using yet because it may make App heavy and slow down the running of app
   Future setSharedPref(
       {required String category,
       required List<dynamic> url,
@@ -23,7 +25,7 @@ class SharedPrefProvider extends ChangeNotifier {
     // print('add');
     notifyListeners();
   }
-
+  //for decoding bytes to picture
   Future<List<String>> getSharedPrefList(String category) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final encodedUrl = prefs.getStringList(category);
@@ -39,6 +41,7 @@ class SharedPrefProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+//Delaying in Show Data Of All categoires with Shimmer
   bool _hasData = false;
   bool get hasData => _hasData;
   void getData() {

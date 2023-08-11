@@ -71,9 +71,11 @@ Widget drawer(
                         ),
                       ),
                       onTap: () {
+                        //for passing current index
                         _provider.getDrawerIndex(index);
                         if (index == 0) {
                           onTap();
+                          //upload image bottom sheet
                           showBottomSheetForImagePicker(
                               category: category,
                               addImageTofireBase: addImageTofireBase,
@@ -82,7 +84,7 @@ Widget drawer(
                         }
                         if (index == 1) {
                           onTap();
-
+// Create Category bottom sheet
                           createCategoryBottomSheet(
                             context,
                             controller,
@@ -91,9 +93,11 @@ Widget drawer(
                           );
                         }
                         if (index == 2) {
+                          //navigate to all categories screen 
                           Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => const AllCategories(),
                           ));
+                          //for deylaing
                           _prefProvider.getData();
                           onTap();
                         }
@@ -112,12 +116,13 @@ Widget drawer(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                     shape: BoxShape.circle, color: Colors.white.withAlpha(150)),
-                child: Icon(
+                child: const Icon(
                   Icons.exit_to_app,
                   color: Colors.white,
                 ),
               ),
               onTap: () async {
+                //function for signout and navigate to siginScreen
                 final SharedPreferences _pref =
                     await SharedPreferences.getInstance();
                 FirebaseAuth.instance.signOut().then((_) {
