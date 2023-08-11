@@ -95,7 +95,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         height: MediaQuery.of(context).size.height * .025,
                       ),
                       _providerWrdRobe.check == true
-                          ? const SizedBox.shrink()
+                          ? const SizedBox(
+                            height: 40,
+                          )
                           : Padding(
                               padding:
                                   const EdgeInsets.only(left: 20, bottom: 20),
@@ -118,11 +120,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ))),
                               ),
                             ),
+                            // first Container Widget
                       pickImageForWardRobe(
                         context,
-                        shirtImageCamera,
-                        shirtImageApp,
-                        () async {
+                      cameraImage:   shirtImageCamera,
+                      appImage:   shirtImageApp,
+                      pickedCameraImageFunction:   () async {
                           final pickedImage = await ImagePicker.platform
                               .getImageFromSource(source: ImageSource.camera);
                           if (pickedImage != null) {
@@ -133,9 +136,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           _providerWrdRobe.getCheck(false);
                           OverlayScreen.inatance().hide();
                         },
-                        () {
+                    pickedAppImageFunction:     () {
                           _providerWrdRobe.getCheck(false);
                           OverlayScreen.inatance().hide();
+                          //pick Image from app
                           wardRobeAppImagePicker(
                             snapshot: snapshot,
                             onTap: (image) {
@@ -148,11 +152,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           );
                         },
                       ),
+                      //second Container Widget
                       pickImageForWardRobe(
                         context,
-                        pentImageCamera,
-                        pentImageApp,
-                        () async {
+                       cameraImage:  pentImageCamera,
+                       appImage:  pentImageApp,
+                       pickedCameraImageFunction:  () async {
                           _providerWrdRobe.getCheck(false);
                           final pickedImage = await ImagePicker.platform
                               .getImageFromSource(source: ImageSource.camera);
@@ -163,9 +168,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           }
                           OverlayScreen.inatance().hide();
                         },
-                        () {
+                       pickedAppImageFunction:  () {
                           _providerWrdRobe.getCheck(false);
                           OverlayScreen.inatance().hide();
+                          //pick Image from App
                           wardRobeAppImagePicker(
                             snapshot: snapshot,
                             onTap: (image) {
@@ -178,11 +184,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           );
                         },
                       ),
+                      //3rd Container Widget
                       pickImageForWardRobe(
                         context,
-                        shoesImageCamera,
-                        shoesImageApp,
-                        () async {
+                      cameraImage:   shoesImageCamera,
+                      appImage:   shoesImageApp,
+                     pickedCameraImageFunction:    () async {
                           _providerWrdRobe.getCheck(false);
                           final pickedImage = await ImagePicker.platform
                               .getImageFromSource(source: ImageSource.camera);
@@ -193,9 +200,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           }
                           OverlayScreen.inatance().hide();
                         },
-                        () {
+                      pickedAppImageFunction:   () {
                           _providerWrdRobe.getCheck(false);
                           OverlayScreen.inatance().hide();
+                          //pick Image From App
                           wardRobeAppImagePicker(
                             snapshot: snapshot,
                             onTap: (image) {
@@ -217,18 +225,19 @@ class _HomeScreenState extends State<HomeScreen> {
         ));
   }
 
-  Widget pickImageForWardRobe(BuildContext context, String cameraImage,
-      String appImage, Function pickedCameraImage, Function pickedAppImage) {
+  Widget pickImageForWardRobe(BuildContext context,{required String cameraImage,
+      required String appImage,required Function pickedCameraImageFunction,required Function pickedAppImageFunction,}) {
     final _providerWardRobe =
         Provider.of<WardRobeProvider>(context, listen: false);
     return GestureDetector(
         onTap: () {
           _providerWardRobe.getCheck(true);
+          //for showing overly to pick image from camera or from app
           OverlayScreen.inatance().show(
             context: context,
-            text: 'hi',
-            functionForPicCameraImage: pickedCameraImage,
-            functionForPickAppImage: pickedAppImage,
+            text: '',
+            functionForPicCameraImage: pickedCameraImageFunction,
+            functionForPickAppImage: pickedAppImageFunction,
           );
         },
         child: appImage.isNotEmpty || cameraImage.isNotEmpty
